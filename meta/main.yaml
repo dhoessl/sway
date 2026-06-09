@@ -1,0 +1,17 @@
+---
+galaxy_info:
+  author: "dhoessl"
+  description: "Install and configure sway"
+  company: ""
+
+  license: "MIT"
+
+  min_ansible_version: "2.20.4"
+
+  galaxy_tags:
+    - "sway"
+    - "waybar"
+    - "wayland"
+
+dependencies: []
+...
