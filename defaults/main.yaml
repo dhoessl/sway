@@ -93,7 +93,4 @@ sway_waybar_pulseaudio_default_format_icons:
     icon: ""
   - name: "car"
     icon: ""
-  - name: "default"
-    icon: '["", "", ""]'
-
 ...

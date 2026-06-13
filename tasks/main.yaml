@@ -138,7 +138,7 @@
     mode: "0644"
 
 - name: "waybar - Copy styles"
-  ansible.builtin.file:
+  ansible.builtin.copy:
     src: "files/waybar_style.css"
     dest: "{{ ansible_facts['user_dir'] }}/.config/waybar/style.css"
     owner: "{{ sway_user | default(ansible_facts['user_id']) }}"
