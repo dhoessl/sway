@@ -1,0 +1,118 @@
+// -*- mode: jsonc -*-
+// {{ ansible_managed }}
+[
+{% for bar in sway_waybars %}
+{
+  "output": "{{ bar['display'] }}",
+  "layer": "top",
+  "position": "{{ bar['position'] | default('bottom') }}",
+  "height": {{ bar['height'] | default(40) }},
+  "spacing": {{ bar['spacing'] | default(4) }},
+  "modules-left": [
+{% for module in bar['modules_left'] %}
+    "{{ module }}",
+{% endfor %}
+  ],
+  "modules-center": [
+{% for module in bar['modules_center'] %}
+    "{{ module }}",
+{% endfor %}
+  ],
+  "modules-right": [
+{% for module in bar['modules_right'] %}
+    "{{ module }}",
+{% endfor %}
+  ],
+  "sway/workspaces": {
+    "disable-scroll": {{ bar['workspaces_disable_scoll'] | default(true) }},
+    "all-outputs": {{ bar['workspaces_all_outputs'] | default(false) }},
+    "warp-on-scroll": {{ bar['workspaces_warp_on_scroll'] | default(false) }},
+    "format": "{{ bar['workspaces_format'] | default('{name}: {icon}') }}",
+    "format-icons": {
+{% for icon in bar['workspaces_format_icons'] | default(sway_waybar_workspaces_default_format_icons)  %}
+      "{{ icon['name'] }}": "{{ icon['icon'] }}",
+{% endfor %}
+    }
+  },
+  "keyboard-state": {
+    "numlock": {{ bar['keyboard_numlock'] | default(true) }},
+    "capslock": {{ bar['keyboard_capslock'] | default(true) }},
+    "format": "{{ bar['keyboard_format'] | default('{name} {icon}') }}",
+    "format-icons": {
+{% for icon in bar['keyboard_format_icons'] | default(sway_waybar_keyboard_default_format_icons) %}
+      "{{ icon['name'] }}": "{{ icon['icon'] }}",
+{% endfor %}
+    }
+  },
+  "idle_inhibitor": {
+    "format": "{{ bar['idle_inhibitor_format'] | default('{icon}') }}",
+    "format-icons": {
+{% for icon in bar['idle_inhibitor_format_icons'] | default(sway_waybar_idle_inhibitor_default_format_icons) %}
+      "{{ icon['name'] }}": "{{ icon['icon'] }}",
+{% endfor %}
+    }
+  },
+  "tray": {
+    "icon-size": {{ bar['tray_icon_size'] | default(24) }},
+    "spacing": {{ bar['tray_spacing'] | default(10) }},
+    "icons": {
+{% for icon in bar['tray_icons'] | default([]) %}
+      "{{ icon['name'] }}": "{{ icon['icon'] }}",
+{% endfor %}
+    }
+  },
+  "clock": {
+    "timezone": "{{ bar['clock_timezone'] | default('Europe/Berlin') }}",
+    "format": "{{ bar['clock_format'] | default('{:%H:%M:%S}') }}",
+    "tooltip-format": "{{ bar['clock_tooltip_format'] | default('<tt><small>{calendar}</small></tt>') }}",
+    "format-alt": "{{ bar['clock_alt_format'] | default('{:%Y-%m-%d}') }}"
+  },
+  "cpu": {
+    "format": "{{ bar['cpu_format'] | default('{usage}% ') }}",
+    "tooltip": "{{ bar['cpu_tooltip'] | default('false') }}"
+  },
+  "memory": {
+    "format": "{{ bar['memory_format'] | default('{}% ') }}"
+  },
+  "temperature": {
+    "hwmon-path": "{{ bar['temperature'] | default('/sys/class/hwmon/hwmon2/temp1_input') }}",
+    "critical-threshold": {{ bar['temperature_critical_threshold'] | default('80') }}",
+    "format": "{{ bar['temperature_format'] | default('{temperatureC}°C {icon}') }}",
+    "format-icons": {{ bar['temperature_format_icons'] | default('["󰉬", "", "󰉪"]') }}
+  },
+  "network": {
+    "format-wifi": "{{ bar['network_format_wifi'] | default('{essid} ({signalStrength}%) ') }}",
+    "format-ethernet": "{{ bar['network_format_ethernet'] | default('{ipaddr}/{cidr} 󰊗') }}",
+    "tooltip-format": "{{ bar['network_tooltip_format'] | default('{ifname} via {gwaddr} 󰊗') }}",
+    "format-linked": "{{ bar['network_format_linked'] | default('{ifname} (No IP) 󰊗') }}",
+    "format-disconnected": "{{ bar['network_format_disconnected'] | default('Disconnected ⚠') }}",
+    "format-alt": "{{ bar['network_format_alt'] | default('{ifname}: {ipaddr}/{cidr}') }}"
+  },
+  "pulseaudio": {
+    "scroll-step": {{ bar['pulseaudio_scroll_step'] | default("1") }},
+    "format": "{{ bar['pulseaudio_format'] | default('{volume}% {icon} {format_source}') }}",
+    "format-muted": "{{ bar['pulseaudio_format_muted'] | default('󰅶  {format_source}') }}",
+    "format-bluetooth": "{{ bar['pulseaudio_format_bluetooth'] | default('{volume}% {icon} {format_source}') }}",
+    "format-bluetooth-muted": "{{ bar['pulseaudio_format_bluetooth_muted'] | default('󰅶 {icon} {format_source}') }}",
+    "format-source": "{{ bar['pulseaudio_format_source'] | default('{volume}% ') }}",
+    "format-source-muted": "{{ bar['pulseaudio_format_source_muted'] | default('') }}",
+    "format-icons": {
+{% for icon in bar['pulseaudio_format_icons'] | default(sway_waybar_pulseaudio_default_format_icons) %}
+      "{{ icon['name'] }}": "{{ icon['icon'] }}",
+{% endfor %}
+    },
+    "on-click": "{{ bar['pulseaudio_on_click'] | default('pavucontrol') }}"
+  },
+  "custom/weather": {
+    "format": "{text}",
+    "return-type": "{json}",
+    "exec": "{{ bar['weather_script'] | default('$HOME/.config/waybar/scripts/weather.py') }}"
+  }
+{% endfor %}
+{% if bar != sway_waybars | last %}
+},
+{% else %}
+}
+{% endif %}
+{% endfor %}
+]

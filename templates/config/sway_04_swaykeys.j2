@@ -33,4 +33,5 @@ bindsym $mod+w                layout tabbed
 bindsym $mod+e                layout toggle split
 
 # Config reload
-bindsym $mod+Shift+c          exec --no-startup-id swaymsg reload
+bindsym $mod+Shift+c          exec --no-startup-id swaymsg reload \
+    && notify-send -u normal "Sway" "Config reloaded"

@@ -5,7 +5,8 @@ from openmeteo_requests import Client
 from requests_cache import CachedSession
 from retry_requests import retry
 from requests import get
-from json import dumps, safe_loads
+from json import dumps
+from yaml import safe_loads
 from time import sleep
 from os import path
 
@@ -76,7 +77,10 @@ if __name__ == "__main__":
     if "city" not in config:
         print(dumps({"text": "City was not given in config"}))
         exit(1)
-    cache_session = CachedSession(".cache", expire_after=3600)
+        cache_session = CachedSession(
+          path.join(path.expanduser("~"), ".cache"),
+          expire_after=3600
+        )
     retry_session = retry(cache_session, retries=5, backoff_factor=.2)
     openmeteo = Client(session=retry_session)
     lat, long = get_coords(config["city"])

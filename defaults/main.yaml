@@ -16,6 +16,7 @@ sway_autostart_applets: []
 sway_autostart_programs: []
 sway_waybars:
   - name: "main"
+    display: "DP-1"
     modules_left:
       - "sway/workspaces"
     modules_center:
@@ -28,6 +29,23 @@ sway_waybars:
       - "memory"
       - "temperature"
       - "custom/weather"
+      - "sway/language"
+      - "clock"
+      - "tray"
+  - name: "side"
+    display: "DP-2"
+    height: "30"
+    modules_left:
+      - "sway/workspaces"
+    modules_center:
+      - "sway/mode"
+    modules_right:
+      - "idle_inhibitor"
+      - "pulseaudio"
+      - "network"
+      - "cpu"
+      - "memory"
+      - "temperature"
       - "sway/language"
       - "clock"
       - "tray"

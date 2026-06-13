@@ -85,27 +85,7 @@
       | default(ansible_facts['user_id']) }}
     mode: "0644"
 
-- name: "Create venv and install modules for weather.py"
-  ansible.builtin.pip:
-    name:
-      - "openmeteo-requests"
-      - "requests-cache"
-      - "retry-requests"
-      - "requests"
-    virtualenv: >-
-      {{ ansible_facts['user_dir'] }}/.config/waybar/scripts/.weather_venv"
-
-- name: "Install weather script"
-  ansible.builtin.template:
-    src: "templates/weather.py.j2"
-    dest: "{{ ansible_facts['user_dir'] }}/.config/waybar/scripts/weather.py"
-    owner: "{{ sway_user | default(ansible_facts['user_id']) }}"
-    group: >-
-      {{ sway_user_group | default(sway_user)
-      | default(ansible_facts['user_id']) }}
-    mode: "0754"
-
-- name: "Create Swayidle Systemd Config"
+- name: "Swayidle - Create systemd config"
   ansible.builtin.template:
     src: "templates/swayidle.service.j2"
     dest: >-
@@ -117,7 +97,7 @@
     mode: "0644"
   when: "sway_idle_systemd_enabled"
 
-- name: "Create and enable swayidle systemd"
+- name: "Swayidle - start and enable systemd service"
   ansible.builtin.systemd_service:
     name: "swayidle.service"
     state: "started"
@@ -126,8 +106,49 @@
     scope: "user"
   when: "sway_idle_systemd_enabled"
 
+- name: "waybar - Create venv and install modules"
+  ansible.builtin.pip:
+    name:
+      - "openmeteo-requests"
+      - "requests-cache"
+      - "retry-requests"
+      - "requests"
+      - "pyyaml"
+    virtualenv: >-
+      {{ ansible_facts['user_dir'] }}/.config/waybar/scripts/.weather_venv
+
+- name: "waybar - Install weather script"
+  ansible.builtin.template:
+    src: "templates/weather.py.j2"
+    dest: "{{ ansible_facts['user_dir'] }}/.config/waybar/scripts/weather.py"
+    owner: "{{ sway_user | default(ansible_facts['user_id']) }}"
+    group: >-
+      {{ sway_user_group | default(sway_user)
+      | default(ansible_facts['user_id']) }}
+    mode: "0754"
+
+- name: "waybar - Create config"
+  ansible.builtin.template:
+    src: "templates/waybar_config.j2"
+    dest: "{{ ansible_facts['user_dir'] }}/.config/waybar/config.jsonc"
+    owner: "{{ sway_user | default(ansible_facts['user_id']) }}"
+    group: >-
+      {{ sway_user_group | default(sway_user)
+      | default(ansible_facts['user_id']) }}
+    mode: "0644"
+
+- name: "waybar - Copy styles"
+  ansible.builtin.file:
+    src: "files/waybar_style.css"
+    dest: "{{ ansible_facts['user_dir'] }}/.config/waybar/style.css"
+    owner: "{{ sway_user | default(ansible_facts['user_id']) }}"
+    group: >-
+      {{ sway_user_group | default(sway_user)
+      | default(ansible_facts['user_id']) }}
+    mode: "0644"
+
 # input group for keyboard access
-- name: "add user to required groups"
+- name: "waybar - add user to required groups"
   ansible.builtin.user:
     name: "{{ sway_user | default(ansible_facts['user_id']) }}"
     append: true
