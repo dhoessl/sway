@@ -7,11 +7,15 @@ from retry_requests import retry
 from requests import get
 from json import dumps, safe_loads
 from time import sleep
+from os import path
 
 CONF_PATH="{{ ansible_facts['user_dir'] }}/.config/waybar/scripts/weather.yaml"
 
 
 def get_config() -> dict:
+    if not path.exists(CONF_PATH):
+        print("Config file not found")
+        exit(1)
     with open(CONF_PATH, "r") as fp:
         data = fp.read()
     return safe_load(data)
