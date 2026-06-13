@@ -15,7 +15,10 @@ CONF_PATH="{{ ansible_facts['user_dir'] }}/.config/waybar/scripts/weather.yaml"
 
 def get_config() -> dict:
     if not path.exists(CONF_PATH):
-        print(dumps({"text": "Config file not found"}))
+        print(
+            dumps({"text": "Config file not found"}),
+            flush=True
+        )
         while True:
             sleep(60)
     with open(CONF_PATH, "r") as fp:
@@ -33,7 +36,10 @@ def get_coords(city: str) -> tuple:
         }
     )
     if req.status_code not in [200, 300, 301] or not req.json().get("results"):
-        print(dumps({"text": f"City {city} was not found"}))
+        print(
+            dumps({"text": f"City {city} was not found"}),
+            flush=True
+        )
         while True:
             sleep(60)
     result = req.json()["results"][0]
@@ -77,7 +83,10 @@ def print_data(data: dict) -> None:
 if __name__ == "__main__":
     config = get_config()
     if "city" not in config:
-        print(dumps({"text": "City was not given in config"}))
+        print(
+            dumps({"text": "`city` var was not given in config"}),
+            flush=True
+        )
         while True:
             sleep(60)
     cache_session = CachedSession(
