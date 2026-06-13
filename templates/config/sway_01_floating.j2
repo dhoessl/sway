@@ -1,0 +1,7 @@
+{% for app in sway_floating_windows %}
+{% if 'state' in app and app['sate'] is sameas false %}
+for_window [app_id="{{ app['app_id'] }}"] floating disable
+{% else %}
+for_window [app_id="{{ app['app_id'] }}"] floating enable
+{% endif %}
+{% endfor %}

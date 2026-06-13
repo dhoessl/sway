@@ -1,0 +1,17 @@
+# {{ ansible_managed }}
+
+# Applets
+{% for applet in sway_autostart_applets %}
+exec --no-startup-id {{ applet }}
+{% endfor %}
+
+# programs
+{% for prog in sway_autostart_programs %}
+exec --no-startup-id {{ prog }}
+{% endfor %}
+
+# taskbar
+{% for taskbar in sway_waybars %}
+exec "waybar --config {{ ansible_facts['user_dir'] }}/.config/waybar/config_{{ taskbar['name'] }}.jsonc --style {{ ansible_facts['user_dir'] }}/.config/waybar/style_{{ taskbar['name'] }}.css"
+{% endfor %}
+

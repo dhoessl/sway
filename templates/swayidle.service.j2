@@ -1,0 +1,9 @@
+[Unit]
+Description = Swayidle Service
+
+[Service]
+ExecStart = swayidle -w \
+{{ sway_idle_events | indent(4, first=true) }}
+
+[Install]
+WantedBy = multi-user.target

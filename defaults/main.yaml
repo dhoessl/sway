@@ -1,0 +1,80 @@
+---
+sway_package:
+  - "sway"
+  - "swayidle"
+  - "swaylock"
+  - "waybar"
+
+sway_install_suggested: true
+sway_suggested_packages:
+  - "grimshot"
+  - "rofi"
+
+sway_workspaces: []
+sway_floating_windows: []
+sway_autostart_applets: []
+sway_autostart_programs: []
+sway_waybars:
+  - name: "main"
+    modules_left:
+      - "sway/workspaces"
+    modules_center:
+      - "sway/mode"
+    modules_right:
+      - "idle_inhibitor"
+      - "pulseaudio"
+      - "network"
+      - "cpu"
+      - "memory"
+      - "temperature"
+      - "custom/weather"
+      - "sway/language"
+      - "clock"
+      - "tray"
+
+sway_idle_events: "timeout 300 'swaylock'"
+
+sway_resize_mode_enabled: true
+sway_sessionmanager_mode_enabled: true
+sway_mediaplayer_mode_enabled: false
+sway_volumemanager_mode_enabled: false
+
+sway_appkeys: []
+
+sway_waybar_workspaces_default_format_icons:
+  - name: "urgent"
+    icon: ""
+  - name: "focused"
+    icon: ""
+  - name: "default"
+    icon: ""
+
+sway_waybar_keyboard_default_format_icons:
+  - name: "locked"
+    icon: ""
+  - name: "unlocked"
+    icon: ""
+
+sway_waybar_idle_inhibitor_default_format_icons:
+  - name: "activated"
+    icon: ""
+  - name: "deactivated"
+    icon: ""
+
+sway_waybar_pulseaudio_default_format_icons:
+  - name: "headphone"
+    icon: ""
+  - name: "hands-free"
+    icon: "󰂑"
+  - name: "headset"
+    icon: "󰂑"
+  - name: "phone"
+    icon: ""
+  - name: "portable"
+    icon: ""
+  - name: "car"
+    icon: ""
+  - name: "default"
+    icon: '["", "", ""]'
+
+...

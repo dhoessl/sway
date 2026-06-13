@@ -1,0 +1,75 @@
+# {{ ansible_managed }}
+{% if sway_resize_mode_enabled is sameas true %}
+# Resizing Mode
+set $mode_resize Shrink width ← Shrink height ↓ Grow width →  Grow height ↑
+mode "$mode_resize" {
+  # Arrow key resizing
+  bindsym Left  resize shrink   width   10 px or 10 ppt
+  bindsym Up    resize grow     height  10 px or 10 ppt
+  bindsym Down  resize shrink   height  10 px or 10 ppt
+  bindsym Right resize grow     width   10 px or 10 ppt
+
+  # back to normal: Enter or Escape or $mod+r
+  bindsym Return mode "default"
+  bindsym Escape mode "default"
+  bindsym $mod+r mode "default"
+}
+bindsym $mod+r mode "$mode_resize"
+{% else %}
+# Resize Mode: disabled
+{% endif %}
+{% if sway_sessionmanager_mode_enabled is sameas true %}
+# Session Manager
+set $mode_system System - lock (l) - logout (e) - suspend (s) - hibernate (h) - reboot (r) - shutdown (Ctrl+s)
+mode "$mode_system" {
+  bindsym l       exec swaylock,                        mode "default"
+  bindsym e       exec swaymsg exit,                    mode "default"
+  bindsym s       exec swaylock && systemctl suspend,   mode "default"
+  bindsym h       exec swaylock && systemctl hibernate, mode "default"
+  bindsym r       exec systemctl reboot,                mode "default"
+  bindsym Ctrl+s  exec systemctl poweroff -i,           mode "default"
+
+  bindsym Return          mode "default"
+  bindsym Escape          mode "default"
+  bindsym $mod+BackSpace  mode "default"
+}
+bindsym $mod+BackSpace mode "$mode_system"
+{% else %}
+# Session Manager Mode: disabled
+{% endif %}
+{% if sway_mediaplayer_mode_enabled is sameas true %}
+# Mediaplayer Mode
+set $mode_player Player -   (h) -   (j) - ← (k) - → (l)
+mode "$mode_player" {
+  bindsym h exec playerctl play-pause
+  bindsym j exec playerctl stop
+  bindsym k exec playerctl previous
+  bindsym l exec playerctl next
+
+  bindsym Return    mode "default"
+  bindsym Escape    mode "default"
+  bindsym $mod+F9   mode "default"
+}
+bindsym $mod+F9 mode "$mode_player"
+
+{% else %}
+# Mediaplayer Mode: disabled
+{% endif %}
+{% if sway_volumemanager_mode_enabled is sameas true %}
+# Volumemanager Mode
+set $mode_volume Volume -   (h) -  (j) -  (k) -  (l)
+mode "$mode_volume" {
+  bindsym h exec pactl set-sink-volume  @DEFAULT_SINK@ +10%
+  bindsym j exec pactl set-sink-volume  @DEFAULT_SINK@ -10%
+  bindsym k exec pactl set-sink-mute    @DEFAULT_SINK@ toggle
+  bindsym l exec pactl set-source-mute  @DEFAULT_SOURCE@ toggle
+
+  bindsym Return    mode "default"
+  bindsym Escape    mode "default"
+  bindsym $mod+F10  mode "default"
+}
+bindsym $mod+F10 mode "$mode_volume"
+
+{% else %}
+# Volumemanager Mode: disabled
+{% endif %}

@@ -1,0 +1,5 @@
+{% for input in sway_inputs %}
+input {{ input["name"] }} {
+{{ input["data"] | indent(2, first=true) }}
+}
+{% endfor %}

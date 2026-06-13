@@ -1,0 +1,8 @@
+{% for output in sway_outputs %}
+output {{ output["name"] }} resolution {{ output["resolution"] }} position {{ output["position"] }}
+{% endfor %}
+{% for output in sway_outputs %}
+{% if "focus" in output and output["focus"] is sameas true %}
+focus output {{ output["name"] }}
+{% endfor %}
+

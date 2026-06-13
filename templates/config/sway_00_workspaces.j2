@@ -1,0 +1,28 @@
+# Workspace definition
+{% for workspace in sway_workspaces %}
+set $ws{{ workspace["index"] }} "{{ workspace['index'] }}: {{ workspace['name'] }}"
+{% endfor %}
+
+# workspace display location
+{% for workspace in sway_workspaces %}
+workspace $ws{{ workspace["index"] }} output {{ workspace["output"] }}
+{% endfor %}
+
+# app assignments to workspaces
+{% for workspace in sway_workspaces %}
+{% if "app_assignment" in workspace %}
+{% for app_id in workspace["app_assignment"] %}
+assign [app_id="{{ app_id }}"] $ws{{ workspace['index'] }}
+{% endfor %}
+{% endif %}
+{% endfor %}
+
+# Keybind: workspace switching
+{% for workspace in sway_workspaces %}
+bindsym $mod+{{ workspace['index'] }} workspace number $ws{{ workspace['index'] }}
+{% endfor %}
+
+# Keybind: move window to workspace
+{% for workspace in sway_workspaces %}
+bindsym $mod+Shift+{{ workspace['index'] }} move container to workspace number $ws{{ workspace['index'] }}
+{% endfor %}

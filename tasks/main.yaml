@@ -1,2 +1,133 @@
 ---
+- name: "Install required packages"
+  ansible.builtin.apt:
+    name: "{{ sway_packages }}"
+    state: "present"
+    update_cache: true
+    force_apt_get: true
+
+- name: "Install suggested packages"
+  ansible.builtin.apt:
+    name: "{{ sway_suggested_packages | default([]) }}"
+    state: "present"
+  when: "{{ sway_install_suggested }}"
+
+- name: "Create config folder"
+  ansible.builtin.file:
+    path: "{{ ansible_facts['user_dir'] }}/.config/{{ item }}"
+    state: "directory"
+    owner: "{{ sway_user | default(ansible_facts['user_id']) }}"
+    group: >-
+      {{ sway_user_group | default(sway_user)
+      | default(ansible_facts['user_id']) }}
+    mode: "0755"
+  loop:
+    - "sway"
+    - "sway/config.d"
+    - "swaylock"
+    - "waybar"
+    - "waybar/scripts"
+
+- name: "Sway - Add main config file"
+  ansible.builtin.template:
+    src: "templates/config/sway_config.j2"
+    dest: "{{ ansible_facts['user_dir'] }}/.config/sway/config"
+    owner: "{{ sway_user | default(ansible_facts['user_id']) }}"
+    group: >-
+      {{ sway_user_group | default(sway_user)
+      | default(ansible_facts['user_id']) }}
+    mode: "0644"
+
+- name: "Sway - add config.d/* files"
+  ansible.builtin.template:
+    src: "templates/config/sway_{{ item }}.j2"
+    dest: >-
+      {{ ansible_facts['user_dir'] }}/.config/sway/config.d/{{ item }}.conf
+    owner: "{{ sway_user | default(ansible_facts['user_id']) }}"
+    group: >-
+      {{ sway_user_group | default(sway_user)
+      | default(ansible_facts['user_id']) }}
+    mode: "0644"
+  loop:
+    - "00_workspaces"
+    - "01_floating"
+    - "02_output"
+    - "03_input"
+    - "04_swaykeys"
+    - "05_autostart"
+    - "06_idle"
+    - "07_modes"
+    - "08_appkeys"
+    - "09_systemd-user"
+
+- name: "Sway - add custom files to config.d/*"
+  ansible.builtin.copy:
+    src: "files/{{ item.src }}"
+    dest: >-
+      {{ ansible_facts['user_dir'] }}/.config/sway/config.d/{{ item.dest }}
+    owner: "{{ sway_user | default(ansible_facts['user_id']) }}"
+    group: >-
+      {{ sway_user_group | default(sway_user)
+      | default(ansible_facts['user_id']) }}
+    mode: "0644"
+  loop: "{{ sway_custom_config_files | default([]) }}"
+
+- name: "Swaylock - create config"
+  ansible.builtin.template:
+    src: "templates/swaylock.j2"
+    dest: >-
+      {{ ansible_facts['user_dir'] }}/.config/swaylock/config
+    owner: "{{ sway_user | default(ansible_facts['user_id']) }}"
+    group: >-
+      {{ sway_user_group | default(sway_user)
+      | default(ansible_facts['user_id']) }}
+    mode: "0644"
+
+- name: "Create venv and install modules for weather.py"
+  ansible.builtin.pip:
+    name:
+      - "openmeteo-requests"
+      - "requests-cache"
+      - "retry-requests"
+      - "requests"
+    virtualenv: >-
+      {{ ansible_facts['user_dir'] }}/.config/waybar/scripts/.weather_venv"
+
+- name: "Install weather script"
+  ansible.builtin.template:
+    src: "files/weather.py.j2"
+    dest: "{{ ansible_facts['user_dir'] }}/.config/waybar/scripts/weather.py"
+    owner: "{{ sway_user | default(ansible_facts['user_id']) }}"
+    group: >-
+      {{ sway_user_group | default(sway_user)
+      | default(ansible_facts['user_id']) }}
+    mode: "0754"
+
+- name: "Create Swayidle Systemd Config"
+  ansible.builtin.template:
+    src: "templates/swayidle.service.j2"
+    dest: >-
+      {{ ansible_facts['user_dir'] }}/.config/systemd/user/swayidle.service
+    owner: "{{ sway_user | default(ansible_facts['user_id']) }}"
+    group: >-
+      {{ sway_user_group | default(sway_user)
+      | default(ansible_facts['user_id']) }}
+    mode: "0644"
+  when: "sway_idle_systemd_enabled"
+
+- name: "Create and enable swayidle systemd"
+  ansible.builtin.systemd_service:
+    name: "swayidle.service"
+    state: "started"
+    enabled: true
+    daemon_reload: true
+    scope: "user"
+  when: "sway_idle_systemd_enabled"
+
+# input group for keyboard access
+- name: "add user to required groups"
+  ansible.builtin.user:
+    name: "{{ sway_user | default(ansible_facts['user_id']) }}"
+    append: true
+    groups: "input"
 ...

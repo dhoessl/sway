@@ -1,0 +1,41 @@
+# {{ ansible_managed }}
+
+# Modifier key
+set $mod {{ sway_mod_key | default("Mod4") }}
+
+# misc vars
+
+set $term {{ sway_terminal_var | default("tilix") }}
+set $menu "{{ sway_menu_var | default('rofi drun,window,run --show drun') }}"
+
+# sway behavior config
+floating_modifier             {{ sway_floating_modifier_key | default("$mod") }}
+workspace_auto_back_and_forth {{ sway_ws_auto_bf | default("yes") }}
+focus_follows_mouse           {{ sway_focus_mouse | default("no") }}
+focus_on_window_activation    {{ sway_focus_window | default("none") }}
+font                          {{ sway_font | default("pango:MesloLGS NF Regular 10") }}
+default_border                {{ sway_default_border | default("normal") }}
+default_floating_border       {{ sway_default_floating_border | default("normal") }}
+hide_edge_borders             {{ sway_hide_edge_border | default("smart") }}
+
+# container title
+for_window [app_id=".*"] title_format "{{ sway_window_titles | default(' %title | %app_id') }}"
+
+# color vars
+set   $base_dark   #2f343f
+set   $base_light  #454b56
+set   $text_light  #c1c2c3
+set   $text_dim    #848c9b
+set   $text_dark   #000000
+set   $urgent      #3D85C6
+set   $indicator   #bbbbbb
+
+# window vars
+# Window Colors         border      background  text        indicator  child_border
+client.focused          $urgent     $urgent     $text_dark  $indicator $urgent
+client.unfocused        $base_light $base_light $text_dim   $indicator
+client.focused_inactive $base_light $base_light $text_dim   $indicator
+client.urgent           $urgent     $urgent     $text_light $indicator
+
+# include ./config.d/*
+include {{ ansible_facts["user_dir"] }}/.config/sway/config.d/*

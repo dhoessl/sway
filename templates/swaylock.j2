@@ -1,0 +1,34 @@
+# {{ ansible_managed }}
+daemonize
+{% if sway_lock_show_failed_attempts | default(true) is sameas true %}
+show-failed-attempts
+{% endif %}
+{% if sway_lock_show_keyboard_layout | default(true) is sameas true %}
+show-keyboard-layout
+{% endif %}
+{% for image in sway_lock_images | default([]) %}
+image={{ image["display"] }}:{{ image["location"] }}
+{% endfor %}
+
+color={{ sway_lock_color | default("1e1e2e") }}
+
+indicator-idle-visible
+indicator-radius={{ sway_lock_indicator_radius | default("80") }}
+indicator-thickness={{ sway_lock_indicator_thickness | default("12") }}
+
+key-hl-color={{ sway_lock_key_hl_color | default("89b4fa") }}
+bs-hl-color={{ sway_lock_bs_hl_color | default("f38ba8") }}
+inside-color={{ sway_lock_inside_color | default("313244") }}
+inside-clear-color={{ sway_lock_inside_clear_color | default("313244") }}
+inside-ver-color={{ sway_lock_inside_ver_color | default("313244") }}
+inside-wrong-color={{ sway_lock_inside_wrong_color | default("313244") }}
+
+ring-color={{ sway_lock_ring_color | default("45475a") }}
+ring-clear-color={{ sway_lock_ring_clear_color | default("89dceb") }}
+ring-ver-color={{ sway_lock_ring_ver_color | default("89b4fa") }}
+ring-wrong-color={{ sway_lock_ring_wrong_color | default("f38ba8") }}
+
+text-color={{ sway_lock_text_color | default("cdd6f4") }}
+text-clear-color={{ sway_lock_text_clear_color | default("cdd6f4") }}
+text-ver-color={{ sway_lock_text_ver_color | default("cdd6f4") }}
+text-wrong-color={{ sway_lock_text_wrong_color | default("cdd6f4") }}

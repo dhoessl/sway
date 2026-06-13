@@ -1,0 +1,23 @@
+# {{ ansible_managed }}
+# Kill focused container
+bindsym $mod+Shift+q  kill
+
+# Start Terminal
+bindsym $mod+Return   exec $term
+
+# App Launcher (Menu)
+bindsym $mod+d        exec $menu
+
+# Audio Controls
+bindsym XF86AudioRaiseVolume  exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +10%
+bindsym XF86AudioLowerVolume  exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -10%
+bindsym XF86AudioMute         exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle
+bindsym XF86AudioMicMute      exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle
+bindsym XF86AudioPlay         exec --no-startup-id playerctl play-pause
+bindsym XF86AudioPrev         exec --no-startup-id playerctl previous
+bindsym XF86AudioNext         exec --no-startup-id playerctl next
+bindsym XF86AudioStop         exec --no-startup-id playerctl stop
+
+{% for shortcut in sway_appkeys %}
+bindsym {{ shortcut['keys'] }} exec {{ shortcut['command'] }}
+{% endfor %}

@@ -1,0 +1,82 @@
+#!{{ ansible_facts['user_dir'] }}/.config/waybar/scripts/.weather_venv/bin/python
+# {{ ansible_managed }}
+
+from openmeteo_requests import Client
+from requests_cache import CachedSession
+from retry_requests import retry
+from requests import get
+from json import dumps, safe_loads
+from time import sleep
+
+CONF_PATH="{{ ansible_facts['user_dir'] }}/.config/waybar/scripts/weather.yaml"
+
+
+def get_config() -> dict:
+    with open(CONF_PATH, "r") as fp:
+        data = fp.read()
+    return safe_load(data)
+
+
+def get_coords(city: str) -> tuple:
+    req = get(
+        "https://geocoding-api.open-meteo.com/v1/search",
+        params={
+            "name": city,
+            "count": 1,
+            "format": "json"
+        }
+    )
+    if req.status_code not in [200, 300, 301] or not req.json().get("results"):
+        print(dumps({"text": f"City {city} was not found"}))
+        exit(1)
+    result = req.json()["results"][0]
+    return result["latitude"], result["longitude"]
+
+
+def get_weather(latitude: float, longitude: float, client: Client) -> dict:
+    response = client.weather_api(
+        "https://api.open-meteo.com/v1/forecast",
+        params={
+            "latitude": latitude,
+            "longitude": longitude,
+            "current": [
+                "temperature_2m",
+                "relative_humidity_2m",
+                "apparent_temperature"
+            ]
+        }
+    )
+    current = response[0].Current()
+    return {
+        "temperature_2m": current.Variables(0).Value(),
+        "humidity_2m": current.Variables(1).Value(),
+        "apparent_temperature": current.Variables(2).Value()
+    }
+
+
+def print_data(data: dict) -> None:
+    print(
+        dumps({
+            "text": (
+                f"T: {data['temperature_2m']:.1f}°C "
+                f"F: {data['apparent_temperature']:.1f}°C "
+                f"H: {data['humidity_2m']:.1f}%"
+            )
+        }),
+        flush=True
+    )
+
+
+if __name__ == "__main__":
+    config = get_config()
+    if "city" not in config:
+        print(dumps({"text": "City was not given in config"}))
+        exit(1)
+    cache_session = CachedSession(".cache", expire_after=3600)
+    retry_session = retry(cache_session, retries=5, backoff_factor=.2)
+    openmeteo = Client(session=retry_session)
+    lat, long = get_coords(config["city"])
+    while True:
+        weather = get_weather(lat, long, openmeteo)
+        print_data(weather)
+        sleep(5 * 60)

@@ -1,0 +1,36 @@
+# {{ ansible_managed }}
+# TODO: Make a real template
+# Cursor keys: Move container
+bindsym $mod+Shift+Left       move left
+bindsym $mod+Shift+Down       move down
+bindsym $mod+Shift+Up         move up
+bindsym $mod+Shift+Right      move right
+
+# Cursor keys: Move focus
+bindsym $mod+Left             focus left
+bindsym $mod+Down             focus down
+bindsym $mod+Up               focus up
+bindsym $mod+Right            focus right
+
+# Split horizontal
+bindsym $mod+v                split h
+
+# Split vertical
+bindsym $mod+h                split v
+
+# Fullscreen toggle
+bindsym $mod+f                fullscreen toggle
+
+# Floating toggle
+bindsym $mod+Shift+space      floating toggle
+
+# Change focus - tiling / floating
+bindsym $mod+space            focus mode_toggle
+
+# Container Layout
+bindsym $mod+s                layout stacking
+bindsym $mod+w                layout tabbed
+bindsym $mod+e                layout toggle split
+
+# Config reload
+bindsym $mod+Shift+c          exec --no-startup-id swaymsg reload
