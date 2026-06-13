@@ -1,3 +1,4 @@
+# {{ ansible_managed }}
 # Workspace definition
 {% for workspace in sway_workspaces %}
 set $ws{{ workspace["index"] }} "{{ workspace['index'] }}: {{ workspace['name'] }}"
