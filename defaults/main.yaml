@@ -1,5 +1,5 @@
 ---
-sway_package:
+sway_packages:
   - "sway"
   - "swayidle"
   - "swaylock"
@@ -33,6 +33,7 @@ sway_waybars:
       - "tray"
 
 sway_idle_events: "timeout 300 'swaylock'"
+sway_idle_systemd_enabled: false
 
 sway_resize_mode_enabled: true
 sway_sessionmanager_mode_enabled: true

@@ -10,7 +10,7 @@
   ansible.builtin.apt:
     name: "{{ sway_suggested_packages | default([]) }}"
     state: "present"
-  when: "{{ sway_install_suggested }}"
+  when: "sway_install_suggested"
 
 - name: "Create config folder"
   ansible.builtin.file:

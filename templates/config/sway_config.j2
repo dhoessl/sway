@@ -6,7 +6,7 @@ set $mod {{ sway_mod_key | default("Mod4") }}
 # misc vars
 
 set $term {{ sway_terminal_var | default("tilix") }}
-set $menu "{{ sway_menu_var | default('rofi drun,window,run --show drun') }}"
+set $menu "{{ sway_menu_var | default('rofi drun,window,run -show drun') }}"
 
 # sway behavior config
 floating_modifier             {{ sway_floating_modifier_key | default("$mod") }}
