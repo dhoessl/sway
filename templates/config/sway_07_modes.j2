@@ -19,6 +19,7 @@ bindsym $mod+r mode "$mode_resize"
 # Resize Mode: disabled
 {% endif %}
 {% if sway_sessionmanager_mode_enabled is sameas true %}
+
 # Session Manager
 set $mode_system System - lock (l) - logout (e) - suspend (s) - hibernate (h) - reboot (r) - shutdown (Ctrl+s)
 mode "$mode_system" {
@@ -35,9 +36,11 @@ mode "$mode_system" {
 }
 bindsym $mod+BackSpace mode "$mode_system"
 {% else %}
+
 # Session Manager Mode: disabled
 {% endif %}
 {% if sway_mediaplayer_mode_enabled is sameas true %}
+
 # Mediaplayer Mode
 set $mode_player Player -   (h) -   (j) - ← (k) - → (l)
 mode "$mode_player" {
@@ -71,5 +74,6 @@ mode "$mode_volume" {
 bindsym $mod+F10 mode "$mode_volume"
 
 {% else %}
+
 # Volumemanager Mode: disabled
 {% endif %}

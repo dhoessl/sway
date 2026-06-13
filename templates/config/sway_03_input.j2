@@ -1,4 +1,4 @@
-{% for input in sway_inputs %}
+{% for input in sway_inputs | default([]) %}
 input {{ input["name"] }} {
 {{ input["data"] | indent(2, first=true) }}
 }

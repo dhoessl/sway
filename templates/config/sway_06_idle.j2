@@ -1,4 +1,4 @@
 {% if not sway_idle_systemd_enabled %}
-exec_always --no-startup-id killall -9 swayidle; swayidle -w \
+exec_always killall -9 swayidle; swayidle -w \
 {{ sway_idle_events | indent(4, first=true) }}
 {% endif %}
