@@ -4,6 +4,11 @@ This role installs and creates config for sway, swayidle, waybar.
 
 A lot of stuff can be changed by using variables. You might want to take a look into the default vars or the templates
 
+# swayidle - systemd
+swayidle might be installed and run using systemd service.
+This is currently not working since swayidle service will be started before compositor was loaded.
+
+
 # Example changed vars for my stuff
 
 ```
