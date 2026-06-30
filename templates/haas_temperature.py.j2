@@ -62,12 +62,26 @@ class Widget:
             sleep(5 * 60)
 
     def print_data(self) -> None:
+        prepared_text = ""
+        for entity in self.entities:
+            if "office" in entity:
+                prepared_text += (
+                    f"O: {self.entities[entity]["state"]}"
+                    f"{self.entities[entity]["unit"]}"
+                )
+            if "wohnzimmer" in entity:
+                prepared_text += (
+                    f" W: {self.entities[entity]["state"]}"
+                    f"{self.entities[entity]["unit"]}"
+                )
         print(
             dumps({
-                "weather": self.weather,
-                "entities": self.entities,
-                "error": "",
-                "text": "Add some text"
+                "text": prepared_text,
+                "tooltip": (
+                    f"Temp: {self.weather['temperature_2m']}°C\n"
+                    f"Feel: {self.weather['apparent_temperature']}°C\n"
+                    f"Humi: {self.weather['humidity_2m']}%"
+                )
             }),
             flush=True
         )
