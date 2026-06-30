@@ -2,8 +2,9 @@
 Description = Swayidle Service
 
 [Service]
-ExecStart = swayidle -w \
-{{ sway_idle_events | indent(4, first=true) }}
+Type=simple
+ExecStart=/home/dhoessl/.config/sway/swayidle.sh
+Restart=on-failure
 
 [Install]
-WantedBy = multi-user.target
+WantedBy=default.target

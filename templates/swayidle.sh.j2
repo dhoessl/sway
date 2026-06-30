@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+while [ "$(ps u | grep sway | grep -v "grep" | grep $USER | wc -l)" -lt "2" ]
+do
+  sleep 1
+done
+
+swayidle -w \
+{{ sway_idle_events | indent(4, first=true) }}

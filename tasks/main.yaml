@@ -85,6 +85,17 @@
       | default(ansible_facts['user_id']) }}
     mode: "0644"
 
+- name: "Swayidle - Create helper script"
+  ansible.builtin.template:
+    src: "templates/swayidle.sh.j2"
+    dest: "{{ ansible_facts['user_dir'] }}/.config/sway/swayidle.sh"
+    owner: "{{ sway_user | default(ansible_facts['user_id']) }}"
+    group: >-
+      {{ sway_user_group | default(sway_user)
+      | default(ansible_facts['user_id']) }}
+    mode: "0644"
+  when: "sway_idle_systemd_enabled"
+
 - name: "Swayidle - Create systemd config"
   ansible.builtin.template:
     src: "templates/swayidle.service.j2"
