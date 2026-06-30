@@ -110,7 +110,7 @@
   "custom/weather": {
     "format": "{text}",
     "return-type": "json",
-    "exec": "{{ bar['weather_script'] | default('$HOME/.config/waybar/scripts/weather.py') }}"
+    "exec": "{{ bar['weather_script'] | default('$HOME/.config/waybar/scripts/temperature.py') }}"
   }
 },
 {% endfor %}
