@@ -93,7 +93,7 @@
     group: >-
       {{ sway_user_group | default(sway_user)
       | default(ansible_facts['user_id']) }}
-    mode: "0644"
+    mode: "0774"
   when: "sway_idle_systemd_enabled"
 
 - name: "Swayidle - Create systemd config"
