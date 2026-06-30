@@ -10,11 +10,27 @@ from yaml import safe_load
 from json import dumps
 from time import sleep
 from datetime import datetime, UTC
+from argparse import ArgumentParser, Namespace
 
-CONFIG_PATH = path.join(
-    path.expanduser("~"), ".config", "waybar", "scripts", "haas.yaml"
-)
 
+def get_args() -> Namespace:
+    parser = ArgumentParser(
+        description="Tool to output Temperature data in json format"
+    )
+    parser.add_argument(
+        "-h",
+        "--home",
+        action="store_true"
+    )
+    parser.add_argument(
+        "-c",
+        "--config",
+        type=str,
+        default=path.join(
+            path.expanduser("~"), ".config", "waybar", "scripts", "haas.yaml"
+        )
+    )
+    return parser.parse_args()
 
 def get_config(config_path) -> dict:
     if not path.exists(config_path):
@@ -27,10 +43,22 @@ def get_config(config_path) -> dict:
     yaml_data = safe_load(data)
     return yaml_data  # config data
 
+def time_formater(seconds: int | str) -> str:
+    seconds = int(seconds)
+    if seconds > 86400:
+        return f"{seconds // 86400}d"
+    elif seconds > 3600:
+        return f"{seconds // 3600}h {(seconds % 3600) // 60}m"
+    elif seconds > 60:
+        return f"{seconds // 60}m {seconds % 60}s"
+    else:
+        return f"{seconds}"
+
 
 class Widget:
-    def __init__(self) -> None:
-        self.config = get_config(CONFIG_PATH)
+    def __init__(self, args: Namespace) -> None:
+        self.args = args
+        self.config = get_config(args.config)
         self.token = get_config(self.config["haas"]["token_path"])["token"]
         self.city_lat, self.city_long = self._get_coords()
         self.openmeteo = Client(
@@ -53,35 +81,62 @@ class Widget:
                 "last_changed": None,
                 "last_updated": None
             }
+        if "update_interval" in self.config:
+            self.update_interval = self.config["update_interval"]
+        else:
+            self.update_interval = 5 * 60
 
     def run(self) -> None:
         while True:
             self.get_entity_states()
             self.get_weather()
-            self.print_data()
-            sleep(5 * 60)
+            if self.args.home:
+                self.print_home_data()
+            else:
+                self.print_data()
+            sleep(self.update_interval)
 
-    def print_data(self) -> None:
-        prepared_text = ""
+    def print_home_data(self) -> None:
+        entity_text = []
         for entity in self.entities:
             if "office" in entity:
-                prepared_text += (
-                    f"O: {self.entities[entity]["state"]}"
-                    f"{self.entities[entity]["unit"]}"
+                entity_text.append(
+                    f"O: {self.entities[entity]['state']}"
+                    f"{self.entities[entity]['unit']}"
                 )
             if "wohnzimmer" in entity:
-                prepared_text += (
-                    f" W: {self.entities[entity]["state"]}"
-                    f"{self.entities[entity]["unit"]}"
+                entity_text.append(
+                    f"W: {self.entities[entity]['state']}"
+                    f"{self.entities[entity]['unit']}"
                 )
         print(
             dumps({
-                "text": prepared_text,
+                "text": " ".join(entity_text),
                 "tooltip": (
                     f"Temp: {self.weather['temperature_2m']}°C\n"
                     f"Feel: {self.weather['apparent_temperature']}°C\n"
                     f"Humi: {self.weather['humidity_2m']}%"
                 )
+            }),
+            flush=True
+        )
+
+    def print_data(self) -> None:
+        entity_text = []
+        for entity in self.entities:
+            entity_text.append(
+                f"{self.entities[entity]['name']}\n"
+                f"{self.entities[entity]['state']}"
+                f"{self.entities[entity]['unit']}\n"
+                f"{time_formater(self.entities[entity]['last_updated']} ago"
+            )
+        print(
+            dumps({
+                "text": (
+                    f"Temp: {self.weather['temperature_2m']}°C"
+                    f" Humi: {self.weather['humidity_2m']}%"
+                ),
+                "tooltip": "\n\n".join(entity_text)
             }),
             flush=True
         )
@@ -99,7 +154,6 @@ class Widget:
             while True:
                 print(
                     dumps({
-                        "error": f"City {city} was not found",
                         "text": f"City {city} was not found"
                     }),
                     flush=True
@@ -141,7 +195,6 @@ class Widget:
             while True:
                 print(
                     dumps({
-                        "error": "failed to get entities",
                         "text": "failed to get entities"
                     }),
                     flush=True
@@ -171,5 +224,6 @@ class Widget:
 
 
 if __name__ == "__main__":
-    widget = Widget()
+    args = get_args()
+    widget = Widget(args)
     widget.run()
