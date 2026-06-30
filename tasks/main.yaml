@@ -131,7 +131,7 @@
 - name: "waybar - Install weather script"
   ansible.builtin.template:
     src: "templates/haas_temperature.py.j2"
-    dest: "{{ ansible_facts['user_dir'] }}/.config/waybar/scripts/hass_temperature.py"
+    dest: "{{ ansible_facts['user_dir'] }}/.config/waybar/scripts/temperature.py"
     owner: "{{ sway_user | default(ansible_facts['user_id']) }}"
     group: >-
       {{ sway_user_group | default(sway_user)
