@@ -10,7 +10,7 @@ from yaml import safe_load
 from time import sleep
 from os import path
 
-CONF_PATH="{{ ansible_facts['user_dir'] }}/.config/waybar/scripts/weather.yaml"
+CONF_PATH = path.join(path.expanduser("~"), ".config", "waybar", "scripts", "weather.yaml")
 
 
 def get_config() -> dict:
