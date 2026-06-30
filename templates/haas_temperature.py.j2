@@ -12,16 +12,16 @@ from time import sleep
 from datetime import datetime, UTC
 
 CONFIG_PATH = path.join(
-    path.expanduser("~"), ".config", "waybar", "scripts" "haas.yaml"
+    path.expanduser("~"), ".config", "waybar", "scripts", "haas.yaml"
 )
 
 
-def get_config(path) -> dict:
-    if not path.exists(path):
+def get_config(config_path) -> dict:
+    if not path.exists(config_path):
         raise RuntimeError(
-            f"Config path: {path} does not exist"
+            f"Config path: {config_path} does not exist"
         )
-    with open(path, "r") as fp:
+    with open(config_path, "r") as fp:
         data = fp.read()
     # Create try - except when error occurs
     yaml_data = safe_load(data)
@@ -58,7 +58,7 @@ class Widget:
         while True:
             self.get_entity_states()
             self.get_weather()
-            print_data()
+            self.print_data()
             sleep(5 * 60)
 
     def print_data(self) -> None:
