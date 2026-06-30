@@ -110,9 +110,9 @@ class Widget:
         )
         current = response[0].Current()
         self.weather = {
-            "temperature_2m": current.Variables(0).Value(),
-            "humidity_2m": current.Variables(1).Value(),
-            "apparent_temperature": current.Variables(2).Value()
+            "temperature_2m": f"{current.Variables(0).Value():.1f}",
+            "humidity_2m": f"{current.Variables(1).Value():.1f}",
+            "apparent_temperature": f"{current.Variables(2).Value():.1f}"
         }
 
     def get_entity_states(self) -> None:
